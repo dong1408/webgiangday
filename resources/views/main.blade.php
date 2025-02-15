@@ -448,7 +448,7 @@
 </html>
 
 
-<style>
+<style scoped>
     /* Header trên cùng */
     .top-header {
         position: fixed;

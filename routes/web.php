@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 
 // ======================= GUEST ========================== //
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/gioi-thieu', [HomeController::class, 'introduction'])->name('introduction');
 
 // ===================== END GUEST ======================== //
 

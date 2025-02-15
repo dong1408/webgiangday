@@ -19,9 +19,26 @@
                 <span><i class="fas fa-phone-alt"></i> 0916 025552</span>
                 <span><i class="fas fa-envelope"></i> toanly.thayphuc@gmail.com</span>
             </div>
-            <div class="auth-links">
-                <a href="#">Đăng ký</a> | <a href="#">Đăng nhập</a>
-            </div>
+            @auth
+                <!-- Settings Dropdown -->
+                <div class="auth-links">
+                    <div class="dropdown">
+                        <p class="dropdown-toggle" style="color: white; margin-bottom:0px" onclick="toggleDropdown()">{{ Auth::user()->name }}</p>
+                        <div class="dropdown-menu">
+                            <a href="{{ route('profile.edit') }}">Profile</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <a href="" onclick="event.preventDefault();
+                                                this.closest('form').submit();">Log Out</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="auth-links">
+                    <a href="{{ route('register') }}">Đăng ký</a> | <a href="{{ route('login') }}">Đăng nhập</a>
+                </div>
+            @endauth            
         </div>
     </div>
 
@@ -34,7 +51,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#">Khóa học</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Giới thiệu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('introduction') }}">Giới thiệu</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Sự kiện</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Tài liệu toán</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Shop toán</a></li>
@@ -175,7 +192,7 @@
 </html>
 
 
-<style>
+<style scoped>
     /* Header trên cùng */
     .top-header {
         position: fixed;
@@ -216,6 +233,48 @@
     .top-header .auth-links a:hover {
         text-decoration: underline;
     }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-toggle {
+        cursor: pointer;
+        font-size: 16px;
+        background: none;
+        border: none;
+        outline: none;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 130%;
+        right: 0;
+        background: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 6px;
+        width: 150px;
+        display: none;
+        flex-direction: column;
+    }
+
+    .dropdown-menu a {
+        text-decoration: none !important;
+        color: #333 !important;
+        padding: 5px 0px;
+        display: block;
+        transition: background 0.2s;
+    }
+
+    .dropdown-menu a:hover {
+        background: rgb(238 242 255 / var(--tw-bg-opacity, 1))
+    }
+
+    .dropdown.active .dropdown-menu {
+        display: flex;
+    }
+
 
     /* Làm navbar đè lên banner */
     .navbar {
@@ -573,4 +632,17 @@
     }
 
     countdown();
+
+
+    function toggleDropdown() {
+        document.querySelector('.dropdown').classList.toggle('active');
+    }
+
+    // Đóng dropdown khi click ra ngoài
+    document.addEventListener('click', function(event) {
+        const dropdown = document.querySelector('.dropdown');
+        if (!dropdown.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
 </script>
