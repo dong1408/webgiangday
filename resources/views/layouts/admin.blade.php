@@ -129,7 +129,7 @@
         <div id="page-body" class="d-flex">
             <div id="sidebar" class="bg-white">
                 <ul id="sidebar-menu">
-                    @can('dashboard.view')
+                    {{-- @can('dashboard.view') --}}
                         <li class="nav-link {{ $module_active == 'dashboard' ? 'active' : '' }}">
                             <a href="{{ route('admin.dashboard') }}">
                                 <div class="nav-link-icon d-inline-flex">
@@ -139,7 +139,7 @@
                             </a>
                             <i class="arrow fas fa-angle-right"></i>
                         </li>
-                    @endcan
+                    {{-- @endcan --}}
                     @canany(['page.view', 'page.add', 'page.edit', 'page.delete'])
                         <li class="nav-link">
                             <a href="?view=list-post">
@@ -219,13 +219,53 @@
                             </ul>
                         </li>
                     @endcanany
+                    {{-- @canany('user.view', 'user.add', 'user.edit', 'user.delete') --}}
+                        <li class="nav-link {{ $module_active == 'user' ? 'active' : '' }}">
+                            <a href="{{ url('admin/course/') }}">
+                                <div class="nav-link-icon d-inline-flex">
+                                    <i class="far fa-folder"></i>
+                                </div>
+                                Khóa học
+                            </a>
+                            <i class="arrow fas fa-angle-right"></i>
+
+                            <ul class="sub-menu">
+                                {{-- @can('user.view') --}}
+                                    <li><a href="{{ route('admin.course.show') }}">Danh sách khóa học</a></li>
+                                {{-- @endcan --}}
+                                {{-- @can('user.add') --}}
+                                    <li><a href="{{ route('admin.course.add') }}">Thêm mới</a></li>
+                                {{-- @endcan --}}
+                            </ul>
+                        </li>
+                    {{-- @endcanany --}}
                     @canany('user.view', 'user.add', 'user.edit', 'user.delete')
                         <li class="nav-link {{ $module_active == 'user' ? 'active' : '' }}">
                             <a href="{{ url('admin/user/') }}">
                                 <div class="nav-link-icon d-inline-flex">
                                     <i class="far fa-folder"></i>
                                 </div>
-                                Users
+                                Thành viên quản trị
+                            </a>
+                            <i class="arrow fas fa-angle-right"></i>
+
+                            <ul class="sub-menu">
+                                @can('user.view')
+                                    <li><a href="{{ route('admin.user.show') }}">Danh sách</a></li>
+                                @endcan
+                                @can('user.add')
+                                    <li><a href="{{ route('admin.user.add') }}">Thêm mới</a></li>
+                                @endcan
+                            </ul>
+                        </li>
+                    @endcanany
+                    @canany('user.view', 'user.add', 'user.edit', 'user.delete')
+                        <li class="nav-link {{ $module_active == 'user' ? 'active' : '' }}">
+                            <a href="{{ url('admin/user/') }}">
+                                <div class="nav-link-icon d-inline-flex">
+                                    <i class="far fa-folder"></i>
+                                </div>
+                                Học viên
                             </a>
                             <i class="arrow fas fa-angle-right"></i>
 

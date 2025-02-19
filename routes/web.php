@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
@@ -54,6 +55,11 @@ Route::prefix('admin')->middleware(Admin::class, Authenticate::class)->group(fun
     Route::get('role/edit/{role}', [RoleController::class, 'edit'])->name('admin.role.edit')->can('role.edit');
     Route::post('role/update/{role}', [RoleController::class, 'update'])->name('admin.role.update')->can('role.edit');
     Route::get('role/delete/{role}', [RoleController::class, 'delete'])->name('admin.role.delete')->can('role.delete');
+
+    // Route course
+    Route::get('course', [CourseController::class, 'show'])->name('admin.course.show');
+    Route::get('course/add', [CourseController::class, 'add'])->name('admin.course.add');
+    Route::post('course/store', [CourseController::class, 'store'])->name('admin.course.store');
 });
 // ===================== END ADMIN ======================== //
 
