@@ -9,6 +9,10 @@
             <div class="card-body">
                 <form action="{{ route('admin.course.store') }}" method="POST">
                     @csrf
+                    <button type="submit">Create google meet link</button>
+                </form>
+                <form action="{{ route('admin.course.store') }}" method="POST">
+                    @csrf
 
                     {{-- <div class="mb-3">
                     <label for="course_id" class="form-label">Khóa học</label>

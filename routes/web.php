@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\GoogleMeetController;
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\Admin;
@@ -62,6 +64,12 @@ Route::prefix('admin')->middleware(Admin::class, Authenticate::class)->group(fun
     Route::post('course/store', [CourseController::class, 'store'])->name('admin.course.store');
 });
 // ===================== END ADMIN ======================== //
+
+
+// Route::get('/create-meet', [GoogleMeetController::class, 'createMeet'])->name('create-meeting');
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.auth');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
