@@ -31,40 +31,40 @@ class GoogleMeetController extends Controller
     //     return response()->json(['meet_link' => $meetingLink]);
     // }
 
-    // public function createMeet(Request $request)
-    // {
-    //     $client = new Client();
-    //     $client->setClientId(config('google.client_id'));
-    //     $client->setClientSecret(config('google.client_secret'));
-    //     $client->setRedirectUri(config('google.redirect_uri'));
+    public function createMeet(Request $request)
+    {
+        $client = new Client();
+        $client->setClientId(config('google.client_id'));
+        $client->setClientSecret(config('google.client_secret'));
+        $client->setRedirectUri(config('google.redirect_uri'));
 
-    //     $token = Session::get('google_token');
-    //     $client->setAccessToken($token);
+        $token = Session::get('google_token');
+        $client->setAccessToken($token);
 
-    //     if ($client->isAccessTokenExpired()) {
-    //         return redirect()->route('google.auth');
-    //     }
+        if ($client->isAccessTokenExpired()) {
+            return redirect()->route('google.auth');
+        }
 
-    //     $service = new Calendar($client);
+        $service = new Calendar($client);
 
-    //     $event = new Event([
-    //         'summary' => 'Lớp học online',
-    //         'start' => ['dateTime' => '2025-02-20T10:00:00+07:00'],
-    //         'end' => ['dateTime' => '2025-02-20T11:00:00+07:00'],
-    //         'conferenceData' => [
-    //             'createRequest' => [
-    //                 'conferenceSolutionKey' => ['type' => 'hangoutsMeet'],
-    //                 'requestId' => 'random-' . time(),
-    //             ],
-    //         ],
-    //     ]);
+        $event = new Event([
+            'summary' => 'Lớp học online',
+            'start' => ['dateTime' => '2025-02-20T10:00:00+07:00'],
+            'end' => ['dateTime' => '2025-02-20T11:00:00+07:00'],
+            'conferenceData' => [
+                'createRequest' => [
+                    'conferenceSolutionKey' => ['type' => 'hangoutsMeet'],
+                    'requestId' => 'random-' . time(),
+                ],
+            ],
+        ]);
 
-    //     $calendarId = 'primary';
-    //     $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
+        $calendarId = 'primary';
+        $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
 
-    //     return response()->json([
-    //         'meet_link' => $event->getHangoutLink(),
-    //         'event_id' => $event->getId(),
-    //     ]);
-    // }
+        return response()->json([
+            'meet_link' => $event->getHangoutLink(),
+            'event_id' => $event->getId(),
+        ]);
+    }
 }

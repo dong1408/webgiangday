@@ -9,9 +9,10 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['subject_id', 'name', 'grade_level', 'course_type'];
+    protected $fillable = ['subject_id', 'name', 'max_students', 'is_active', 'description', 'grade_level', 'course_type', 'location', 'google_meet_link', 'start_date', 'end_date', 'price'];
 
-    public function subject() {
+    public function subject()
+    {
         return $this->belongsTo(Subject::class);
     }
 

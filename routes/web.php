@@ -66,8 +66,9 @@ Route::prefix('admin')->middleware(Admin::class, Authenticate::class)->group(fun
 // ===================== END ADMIN ======================== //
 
 
-// Route::get('/create-meet', [GoogleMeetController::class, 'createMeet'])->name('create-meeting');
+Route::get('/create-meet', [GoogleMeetController::class, 'createMeet'])->name('create-meeting');
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.auth');
+Route::get('/auth/check-google-token', [GoogleAuthController::class, 'checkGoogleToken'])->name('google.check_token');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 
