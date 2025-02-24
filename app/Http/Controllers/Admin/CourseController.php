@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Schedule;
 use App\Services\GoogleMeetService;
 use Carbon\Carbon;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -46,6 +47,7 @@ class CourseController extends Controller
                 'after_or_equal:' . now()->addMonth()->toDateString()
             ],
             'price'         => 'required|numeric|min:1000|max:100000000',
+            'image_course' => 'required|image|mimes:jpeg,png,jpg,gif',
             'schedules'     => 'required|array|min:1',
             'schedules.*.day_of_week' => 'required|integer|between:0,6',
             'schedules.*.start_time'  => 'required|date_format:H:i',
@@ -66,9 +68,13 @@ class CourseController extends Controller
                 return redirect()->route('admin.course.add')->with('fail', 'Có lỗi xảy ra, vui lòng thử tạo lại!');
             }
         }
+        $imageCourseUrl = Cloudinary::upload($request->file('image_course')->getRealPath())->getSecurePath();
+        if(!$imageCourseUrl){
+            return redirect()->route('admin.course.add')->with('fail', 'Có lỗi xảy ra, vui lòng thử tạo lại!');
+        }
 
         // Transaction để tạo khóa học và lịch học
-        DB::transaction(function () use ($data, $meetingLink, $schedules, $startDate, $endDate) {
+        DB::transaction(function () use ($data, $meetingLink, $schedules, $startDate, $endDate, $imageCourseUrl) {
             $course = new Course();
             $course->fill([
                 'name'   => $data['course_name'],
@@ -83,6 +89,7 @@ class CourseController extends Controller
                 'start_date'    => $data['start_date'],
                 'end_date'      => $data['end_date'],
                 'price'         => $data['price'],
+                'image_url'     => $imageCourseUrl ?? null
             ]);
             $course->save();
 

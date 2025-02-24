@@ -9,6 +9,38 @@
         font-size: 14px;
         display: none;
     }
+
+    /* Ẩn input file gốc */
+    #imageCourse {
+        display: none;
+    }
+
+    /* Nút chọn ảnh tùy chỉnh */
+    .custom-file-upload {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .custom-file-upload:hover {
+        background-color: #0056b3;
+    }
+
+    /* Hiển thị ảnh xem trước */
+    #previewImage {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+        display: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
 </style>
 
 @extends('layouts.admin')
@@ -35,7 +67,8 @@
                 Thêm Khóa Học Mới
             </div>
             <div class="card-body">
-                <form id="courseForm" action="{{ route('admin.course.store') }}" method="POST" novalidate>
+                <form id="courseForm" action="{{ route('admin.course.store') }}" method="POST" enctype="multipart/form-data"
+                    novalidate>
                     @csrf
 
                     {{-- <div class="mb-3">
@@ -142,6 +175,17 @@
                         <input type="hidden" name="price" id="price">
                     </div>
 
+                    <div class="form-group">
+                        <label for="">Ảnh khóa học<span class="required-label">*</span></label><br>
+                        <label for="imageCourse" class="custom-file-upload">Chọn ảnh</label>
+                        <input type="file" name="image_course" id="imageCourse" accept="image/*">
+                        <img id="previewImage" src="" alt="Ảnh xem trước" style="max-width: 200px">
+                        <small class="error" id="image_course_error">Vui lòng chọn ảnh</small>
+                        @error('image_course')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
                     <h4>Thêm Lịch Học <span class="required-label">*</span></h4>
                     <div id="schedule-container">
                         <div class="schedule-item border p-3 mb-2">
@@ -185,6 +229,7 @@
                 'none';
 
             document.getElementById("add-schedule").addEventListener("click", function() {
+                console.log("aaaa");
                 addSchedule();
             });
             document.querySelectorAll(".remove-schedule").forEach(button => {
@@ -233,6 +278,20 @@
                     endDate.value = today;
                 }
             });
+        });
+
+
+        document.getElementById('imageCourse').addEventListener('change', function(event) {
+            let file = event.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let preview = document.getElementById('previewImage');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
         });
 
         // trigger event remove schedule
@@ -318,6 +377,16 @@
                     document.getElementById("end_date_error").style.display = "none";
                 }
             }
+
+            // validate ảnh
+            let imageCourse = document.getElementById('imageCourse');
+            if (!imageCourse.files.length) {
+                isValid = false;
+                document.getElementById("image_course_error").style.display = "block";
+            } else {
+                document.getElementById("image_course_error").style.display = "none";
+            }
+
 
             // Validate lịch học
             if (!validateSchedules()) {
@@ -441,7 +510,7 @@
                     if (formData.hasOwnProperty(input.name)) {
                         if (input.type === "checkbox" || input.type === "radio") {
                             input.checked = formData[input.name];
-                        } else {
+                        } else if (input.type !== "file") {
                             input.value = formData[input.name];
                         }
                     }
