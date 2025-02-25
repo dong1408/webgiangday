@@ -8,16 +8,20 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\GoogleMeetController;
 use App\Http\Controllers\Guest\HomeController;
+use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\Admin;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
+use UniSharp\LaravelFileManager\Lfm;
+
 
 
 
 // ======================= GUEST ========================== //
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/gioi-thieu', [HomeController::class, 'introduction'])->name('introduction');
+Route::get('/shop-toan-ly', [ProductController::class, 'index'])->name('product.main');
 
 // ===================== END GUEST ======================== //
 
@@ -62,6 +66,11 @@ Route::prefix('admin')->middleware(Admin::class, Authenticate::class)->group(fun
     Route::get('course', [CourseController::class, 'show'])->name('admin.course.show');
     Route::get('course/add', [CourseController::class, 'add'])->name('admin.course.add');
     Route::post('course/store', [CourseController::class, 'store'])->name('admin.course.store');
+
+    // Tích hợp trình quản lý file tiny
+    Route::group(['prefix' => 'laravel-filemanager'], function () {
+        Lfm::routes();
+    });
 });
 // ===================== END ADMIN ======================== //
 
@@ -70,6 +79,7 @@ Route::get('/create-meet', [GoogleMeetController::class, 'createMeet'])->name('c
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.auth');
 Route::get('/auth/check-google-token', [GoogleAuthController::class, 'checkGoogleToken'])->name('google.check_token');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+
 
 
 Route::get('/dashboard', function () {

@@ -1,49 +1,51 @@
-<style scoped>
-    .required-label {
-        color: red;
-        margin-left: 5px;
-    }
-
-    .error {
-        color: red;
-        font-size: 14px;
-        display: none;
-    }
-
-    /* Ẩn input file gốc */
-    #imageCourse {
-        display: none;
-    }
-
-    /* Nút chọn ảnh tùy chỉnh */
-    .custom-file-upload {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .custom-file-upload:hover {
-        background-color: #0056b3;
-    }
-
-    /* Hiển thị ảnh xem trước */
-    #previewImage {
-        max-width: 100%;
-        height: auto;
-        margin-top: 10px;
-        display: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-</style>
-
 @extends('layouts.admin')
+
+@section('integration_file_manage')
+    <script type="text/javascript"
+        src='https://cdn.tiny.cloud/1/qbw7rset86a37udw8sv86njuneptk0ctw88a570llag2w9od/tinymce/5/tinymce.min.js'
+        referrerpolicy="origin"></script>
+    <script type="text/javascript">
+        var editor_config = {
+            path_absolute: "http://localhost:8000/admin/",
+            selector: '#description',
+            relative_urls: false,
+            plugins: [
+                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+                "searchreplace wordcount visualblocks visualchars code fullscreen",
+                "insertdatetime media nonbreaking save table directionality",
+                "emoticons template paste textpattern"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media",
+            file_picker_callback: function(callback, value, meta) {
+                var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName(
+                    'body')[0].clientWidth;
+                var y = window.innerHeight || document.documentElement.clientHeight || document
+                    .getElementsByTagName('body')[0].clientHeight;
+
+                var cmsURL = editor_config.path_absolute + 'laravel-filemanager?editor=' + meta.fieldname;
+                if (meta.filetype == 'image') {
+                    cmsURL = cmsURL + "&type=Images";
+                } else {
+                    cmsURL = cmsURL + "&type=Files";
+                }
+
+                tinyMCE.activeEditor.windowManager.openUrl({
+                    url: cmsURL,
+                    title: 'Filemanager',
+                    width: x * 0.8,
+                    height: y * 0.8,
+                    resizable: "yes",
+                    close_previous: "no",
+                    onMessage: (api, message) => {
+                        callback(message.content);
+                    }
+                });
+            }
+        };
+
+        tinymce.init(editor_config);
+    </script>
+@endsection
 
 @section('content')
     <div id="content" class="container-fluid">
@@ -101,6 +103,15 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="short-desc" class="form-label">Mô tả ngắn<span class="required-label">*</span></label>
+                        <textarea class="form-control" name="short_desc" id="short-desc" rows="4"></textarea>
+                        @error('short_desc')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                        <small class="error" id="short_desc_error">Vui lòng nhập nội dung mô tả ngắn cho khóa học</small>
+                    </div>
+
+                    <div class="form-group">
                         <label class="form-label">Loại khóa học<span class="required-label">*</span></label>
                         <select class="form-control" name="course_type" id="course_type" required>
                             <option value="offline" {{ old('course_type') == 'offline' ? 'selected' : '' }}>Offline</option>
@@ -117,7 +128,7 @@
 
                     <div class="form-group">
                         <label for="description" class="form-label">Mô Tả Khóa Học</label>
-                        <textarea class="form-control" name="description" rows="4"></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="20"></textarea>
                     </div>
 
                     <div class="form-group">
@@ -152,7 +163,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="end_date" class="form-label">Ngày Kết Thúc<span class="required-label">*</span></label>
+                        <label for="end_date" class="form-label">Ngày Kết Thúc<span
+                                class="required-label">*</span></label>
                         <input type="date" class="form-control" id="endDate" name="end_date" required>
                         @error('end_date')
                             <small class="text-danger">{{ $message }}</small>
@@ -216,6 +228,52 @@
             </div>
         </div>
     </div>
+
+    <style scoped>
+        .required-label {
+            color: red;
+            margin-left: 5px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Ẩn input file gốc */
+        #imageCourse {
+            display: none;
+        }
+
+        /* Nút chọn ảnh tùy chỉnh */
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #0056b3;
+        }
+
+        /* Hiển thị ảnh xem trước */
+        #previewImage {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            display: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -316,6 +374,15 @@
                 isValid = false;
             } else {
                 document.getElementById("course_name_error").style.display = "none";
+            }
+
+            // Validate mô tả ngắn
+            let shortDesc = document.getElementById("short-desc").value.trim();
+            if (shortDesc === "") {
+                document.getElementById("short_desc_error").style.display = "block";
+                isValid = false;
+            } else {
+                document.getElementById("short_desc_error").style.display = "none";
             }
 
             // Validate khối lớp

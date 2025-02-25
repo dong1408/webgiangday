@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tiny.cloud/1/qbw7rset86a37udw8sv86njuneptk0ctw88a570llag2w9od/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 
 <body>
@@ -50,11 +51,10 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Khóa học</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('introduction') }}">Giới thiệu</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Sự kiện</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Tài liệu toán</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Shop toán</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Tài liệu toán lý</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('product.main') }}">Đăng ký lớp học</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
                 </ul>
             </div>

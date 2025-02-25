@@ -36,6 +36,7 @@ class CourseController extends Controller
     {
         $request->validate([
             'course_name'   => 'required|string|max:255',
+            'shortDesc'     => 'required|string',
             'course_type'   => 'required|in:online,offline',
             'grade_level'   => 'required|integer|min:1|max:12',
             'max_students'  => 'required|integer|min:1|max:1000',
@@ -81,6 +82,7 @@ class CourseController extends Controller
                 'subject_id'    => 1,
                 'course_type'   => $data['course_type'],
                 'description'   => $data['description'] ?? '',
+                'short_desc'    => $data['short_desc'] ?? '',
                 'max_students'  => $data['max_students'],
                 'is_active'     => 1,
                 'grade_level'   => $data['grade_level'],

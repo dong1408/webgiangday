@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admintrator</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
@@ -14,37 +15,35 @@
     {{-- <link rel="stylesheet" href="{{ url('css/import/detail_order.css') }}"> --}}
 
     @yield('integration_file_manage')
-
-    <title>Admintrator</title>
 </head>
 
 <script>
     function checkDate() {
         var dateFrom = document.getElementById('date-from').value;
         var dateTo = document.getElementById('date-to').value;
-        if (dateFrom > dateTo){
+        if (dateFrom > dateTo) {
             var popup = document.getElementById('popup-error-date');
             popup.style.display = "block";
             return false;
         }
     }
 
-    function checkPrice(){
+    function checkPrice() {
         var priceFrom = document.getElementById('price-from').value;
         var priceTo = document.getElementById('price-to').value;
-        if (priceFrom > priceTo){
+        if (priceFrom > priceTo) {
             var popup = document.getElementById('popup-error-price');
             popup.style.display = "block";
             return false;
         }
     }
 
-    function hiddenPopupDate(){
+    function hiddenPopupDate() {
         var popup = document.getElementById('popup-error-date');
         popup.style.display = "none";
     }
 
-    function hiddenPopupPrice(){
+    function hiddenPopupPrice() {
         var popup = document.getElementById('popup-error-price');
         popup.style.display = "none";
     }
@@ -130,15 +129,15 @@
             <div id="sidebar" class="bg-white">
                 <ul id="sidebar-menu">
                     {{-- @can('dashboard.view') --}}
-                        <li class="nav-link {{ $module_active == 'dashboard' ? 'active' : '' }}">
-                            <a href="{{ route('admin.dashboard') }}">
-                                <div class="nav-link-icon d-inline-flex">
-                                    <i class="far fa-folder"></i>
-                                </div>
-                                Dashboard
-                            </a>
-                            <i class="arrow fas fa-angle-right"></i>
-                        </li>
+                    <li class="nav-link {{ $module_active == 'dashboard' ? 'active' : '' }}">
+                        <a href="{{ route('admin.dashboard') }}">
+                            <div class="nav-link-icon d-inline-flex">
+                                <i class="far fa-folder"></i>
+                            </div>
+                            Dashboard
+                        </a>
+                        <i class="arrow fas fa-angle-right"></i>
+                    </li>
                     {{-- @endcan --}}
                     @canany(['page.view', 'page.add', 'page.edit', 'page.delete'])
                         <li class="nav-link">
@@ -220,24 +219,24 @@
                         </li>
                     @endcanany
                     {{-- @canany('user.view', 'user.add', 'user.edit', 'user.delete') --}}
-                        <li class="nav-link {{ $module_active == 'user' ? 'active' : '' }}">
-                            <a href="{{ url('admin/course/') }}">
-                                <div class="nav-link-icon d-inline-flex">
-                                    <i class="far fa-folder"></i>
-                                </div>
-                                Khóa học
-                            </a>
-                            <i class="arrow fas fa-angle-right"></i>
+                    <li class="nav-link {{ $module_active == 'user' ? 'active' : '' }}">
+                        <a href="{{ url('admin/course/') }}">
+                            <div class="nav-link-icon d-inline-flex">
+                                <i class="far fa-folder"></i>
+                            </div>
+                            Khóa học
+                        </a>
+                        <i class="arrow fas fa-angle-right"></i>
 
-                            <ul class="sub-menu">
-                                {{-- @can('user.view') --}}
-                                    <li><a href="{{ route('admin.course.show') }}">Danh sách khóa học</a></li>
-                                {{-- @endcan --}}
-                                {{-- @can('user.add') --}}
-                                    <li><a href="{{ route('admin.course.add') }}">Thêm mới</a></li>
-                                {{-- @endcan --}}
-                            </ul>
-                        </li>
+                        <ul class="sub-menu">
+                            {{-- @can('user.view') --}}
+                            <li><a href="{{ route('admin.course.show') }}">Danh sách khóa học</a></li>
+                            {{-- @endcan --}}
+                            {{-- @can('user.add') --}}
+                            <li><a href="{{ route('admin.course.add') }}">Thêm mới</a></li>
+                            {{-- @endcan --}}
+                        </ul>
+                    </li>
                     {{-- @endcanany --}}
                     @canany('user.view', 'user.add', 'user.edit', 'user.delete')
                         <li class="nav-link {{ $module_active == 'user' ? 'active' : '' }}">
