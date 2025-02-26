@@ -36,7 +36,7 @@ class CourseController extends Controller
     {
         $request->validate([
             'course_name'   => 'required|string|max:255',
-            'shortDesc'     => 'required|string',
+            'short_desc'     => 'required|string',
             'course_type'   => 'required|in:online,offline',
             'grade_level'   => 'required|integer|min:1|max:12',
             'max_students'  => 'required|integer|min:1|max:1000',
@@ -74,7 +74,7 @@ class CourseController extends Controller
             return redirect()->route('admin.course.add')->with('fail', 'Có lỗi xảy ra, vui lòng thử tạo lại!');
         }
 
-        // Transaction để tạo khóa học và lịch học
+        // Transaction để tạo lớp học và lịch học
         DB::transaction(function () use ($data, $meetingLink, $schedules, $startDate, $endDate, $imageCourseUrl) {
             $course = new Course();
             $course->fill([
@@ -114,6 +114,6 @@ class CourseController extends Controller
             }
             DB::table('schedules')->insert($schedulesCourse);
         });
-        return redirect()->route('admin.course.add')->with('status', 'Tạo khóa học thành công')->with('clearLocalStorage', true);
+        return redirect()->route('admin.course.add')->with('status', 'Tạo lớp học thành công')->with('clearLocalStorage', true);
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('main-content')
-    <div class="container mt-5" style="margin-top: 60px!important">
+    <div class="container">
         <div class="breadcrumbs-wrapper">
             <div class="container">
                 <ul class="breadcrumbs" id="breadcrumbs">
@@ -185,7 +185,7 @@
     .breadcrumbs-wrapper #breadcrumbs {
         padding: 13px 0;
         margin: 0;
-        border-bottom: 1px solid var(--thim-breacrumb-border-color, #eee);
+        border-bottom: 1px solid #adb5bd;
     }
 
     .separator::before {
@@ -197,7 +197,7 @@
     .breadcrumbs-wrapper #breadcrumbs li {
         line-height: 25px;
         display: inline-block;
-        color: #999;
+        color: #black;
         list-style: none;
     }
 

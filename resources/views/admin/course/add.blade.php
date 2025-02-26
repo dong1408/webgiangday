@@ -66,7 +66,7 @@
                 </script>
             @endif
             <div class="card-header font-weight-bold">
-                Thêm Khóa Học Mới
+                Thêm Lớp Học Mới
             </div>
             <div class="card-body">
                 <form id="courseForm" action="{{ route('admin.course.store') }}" method="POST" enctype="multipart/form-data"
@@ -94,12 +94,12 @@
                 </div> --}}
 
                     <div class="form-group">
-                        <label for="name" class="form-label">Tên khóa học<span class="required-label">*</span></label>
+                        <label for="name" class="form-label">Tên lớp học<span class="required-label">*</span></label>
                         <input type="text" class="form-control" name="course_name" id="course_name" required>
                         @error('course_name')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
-                        <small class="error" id="course_name_error">Vui lòng nhập tên khóa học</small>
+                        <small class="error" id="course_name_error">Vui lòng nhập tên lớp học</small>
                     </div>
 
                     <div class="form-group">
@@ -108,16 +108,16 @@
                         @error('short_desc')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
-                        <small class="error" id="short_desc_error">Vui lòng nhập nội dung mô tả ngắn cho khóa học</small>
+                        <small class="error" id="short_desc_error">Vui lòng nhập nội dung mô tả ngắn cho lớp học</small>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Loại khóa học<span class="required-label">*</span></label>
+                        <label class="form-label">Loại lớp học<span class="required-label">*</span></label>
                         <select class="form-control" name="course_type" id="course_type" required>
                             <option value="offline" {{ old('course_type') == 'offline' ? 'selected' : '' }}>Offline</option>
                             <option value="online" {{ old('course_type') == 'online' ? 'selected' : '' }}>Online</option>
                         </select>
-                        <small class="error" id="course_type_error">Vui lòng chọn loại khóa học online hoặc offline</small>
+                        <small class="error" id="course_type_error">Vui lòng chọn loại lớp học online hoặc offline</small>
                     </div>
 
                     <div class="form-group" id="location_field" style="display: none">
@@ -127,7 +127,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="form-label">Mô Tả Khóa Học</label>
+                        <label for="description" class="form-label">Mô Tả Lớp Học</label>
                         <textarea class="form-control" id="description" name="description" rows="20"></textarea>
                     </div>
 
@@ -149,7 +149,7 @@
                         @error('max_students')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
-                        <small class="error" id="max_students_error">Vui lòng chọn số lượng học sinh tối đa cho khóa
+                        <small class="error" id="max_students_error">Vui lòng chọn số lượng học sinh tối đa cho lớp
                             học</small>
                     </div>
 
@@ -175,7 +175,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="formatted_price" class="form-label">Giá Khóa Học <span
+                        <label for="formatted_price" class="form-label">Giá Lớp Học <span
                                 class="required-label">*</span></label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="formatted_price" required>
@@ -188,7 +188,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="">Ảnh khóa học<span class="required-label">*</span></label><br>
+                        <label for="">Ảnh lớp học<span class="required-label">*</span></label><br>
                         <label for="imageCourse" class="custom-file-upload">Chọn ảnh</label>
                         <input type="file" name="image_course" id="imageCourse" accept="image/*">
                         <img id="previewImage" src="" alt="Ảnh xem trước" style="max-width: 200px">
@@ -287,7 +287,6 @@
                 'none';
 
             document.getElementById("add-schedule").addEventListener("click", function() {
-                console.log("aaaa");
                 addSchedule();
             });
             document.querySelectorAll(".remove-schedule").forEach(button => {
@@ -367,7 +366,7 @@
             e.preventDefault();
             let isValid = true;
 
-            // Validate tên khóa học
+            // Validate tên lớp học
             let courseName = document.getElementById("course_name").value.trim();
             if (courseName === "") {
                 document.getElementById("course_name_error").style.display = "block";
@@ -404,7 +403,7 @@
                 document.getElementById("max_students_error").style.display = "none";
             }
 
-            // Validate giá khóa học
+            // Validate giá lớp học
             // let price = parseInt(document.getElementById("price").value, 10);
             // if (isNaN(price) || price <= 0 || price > 50000000) {
             //     document.getElementById("price_error").style.display = "block";

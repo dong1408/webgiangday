@@ -224,13 +224,13 @@
                             <div class="nav-link-icon d-inline-flex">
                                 <i class="far fa-folder"></i>
                             </div>
-                            Khóa học
+                            Lớp học
                         </a>
                         <i class="arrow fas fa-angle-right"></i>
 
                         <ul class="sub-menu">
                             {{-- @can('user.view') --}}
-                            <li><a href="{{ route('admin.course.show') }}">Danh sách khóa học</a></li>
+                            <li><a href="{{ route('admin.course.show') }}">Danh sách lớp học</a></li>
                             {{-- @endcan --}}
                             {{-- @can('user.add') --}}
                             <li><a href="{{ route('admin.course.add') }}">Thêm mới</a></li>

@@ -22,6 +22,7 @@ use UniSharp\LaravelFileManager\Lfm;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/gioi-thieu', [HomeController::class, 'introduction'])->name('introduction');
 Route::get('/shop-toan-ly', [ProductController::class, 'index'])->name('product.main');
+Route::get('/shop-toan-ly/{id}', [ProductController::class, 'detail'])->name('product.detail');
 
 // ===================== END GUEST ======================== //
 
