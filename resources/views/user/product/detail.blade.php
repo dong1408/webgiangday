@@ -41,13 +41,6 @@
                         @endforeach
                     </div>
 
-                    <!-- Nhập số lượng + nút thêm vào giỏ hàng -->
-                    <div class="d-flex align-items-center mt-3">
-                        <input type="number" value="1" class="form-control quantity-input me-3">
-                        <button class="btn btn-warning btn-add-cart flex-grow-1" data-product-id={{ $coruse->id }}>🛒
-                            Thêm vào giỏ hàng</button>
-                    </div>
-
                     <p class="text-muted mt-3">Mã: N/A</p>
                     <p class="text-muted">Danh mục: Toán 8</p>
 
@@ -57,6 +50,11 @@
                         <a href="#" class="text-primary">🔵 Facebook</a>
                         <a href="#" class="text-danger">📧 Email</a>
                         <a href="#" class="text-secondary">🔗 LinkedIn</a>
+                    </div>
+
+                    <div class="d-flex align-items-center mt-3">
+                        <button class="btn btn-warning btn-add-cart flex-grow-1" data-product-id={{ $course->id }}>🛒
+                            Thêm vào giỏ hàng</button>
                     </div>
                 </div>
             </div>
@@ -96,6 +94,19 @@
             </div>
         </div>
     </div>
+    <!-- Modal Thông báo -->
+    <div class="modal fade" id="cartSuccessModal" tabindex="-1" aria-labelledby="cartSuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p> Sản phẩm đã được thêm vào giỏ hàng thành công!</p>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <a href="{{ route('cart.show') }}" class="btn btn-primary">Xem giỏ hàng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <style scoped>
         #carouselExampleIndicators {
@@ -210,8 +221,6 @@
             text-decoration: underline;
         }
 
-
-
         /* mô tả + đánh giá */
         .nav-tabs-course .nav-link {
             font-size: 16px;
@@ -229,34 +238,72 @@
             background: #fff;
             border-radius: 5px;
         }
+
+        /* ********************** modal popup **************************/
+        /* Căn giữa modal theo chiều dọc */
+        .modal-dialog {
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Tùy chỉnh giao diện modal */
+        .modal-content {
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            background: #fff;
+        }
+
+        /* Căn giữa icon và nội dung */
+        .modal-body {
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        /* Tạo hiệu ứng icon */
+        .modal-body i {
+            font-size: 50px;
+            color: #28a745;
+            margin-bottom: 10px;
+            animation: popIn 0.5s ease-in-out;
+        }
+
+        /* Tạo hiệu ứng xuất hiện */
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
     </style>
 
     <script>
         $(document).ready(function() {
             $('.btn-add-cart').click(function() {
-                let productId = $(this).data('product-id');
-                let quantity = $('#quantity').val();
+                let courseId = $(this).data('product-id');
 
                 $.ajax({
                     url: '/cart/add',
                     type: 'POST',
                     data: {
-                        product_id: productId,
-                        quantity: quantity,
-                        _token: $('meta[name="csrf-token"]').attr(
-                            'content') // Lấy CSRF Token nếu có
+                        course_id: courseId,
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
-                        $('#cart-message').html(
-                            '<div class="alert alert-success">Đã thêm vào giỏ hàng!</div>');
-
-                        // Cập nhật số lượng sản phẩm trong giỏ hàng (nếu có hiển thị icon giỏ hàng)
-                        $('#cart-count').text(response.cart_count);
+                        if (response.success) {
+                            $('#cartSuccessModal').modal('show');
+                        } else {
+                            alert(response.message);
+                        }
                     },
                     error: function() {
-                        $('#cart-message').html(
-                            '<div class="alert alert-danger">Lỗi khi thêm vào giỏ hàng!</div>'
-                        );
+                        alert('Lỗi khi thêm vào giỏ hàng!');
                     }
                 });
             });

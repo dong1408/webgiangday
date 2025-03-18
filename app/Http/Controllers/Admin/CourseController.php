@@ -21,9 +21,21 @@ class CourseController extends Controller
         $this->googleMeetService = $googleMeetService;
     }
 
-    public function show()
+    public function show(Request $request)
     {
-        return view('admin.course.show');
+        $status = $request->input('status') ? $request->input('status') : "active";
+        $courses = Course::all();
+        $days = [
+            1 => 'Thứ 2',
+            2 => 'Thứ 3',
+            3 => 'Thứ 4',
+            4 => 'Thứ 5',
+            5 => 'Thứ 6',
+            6 => 'Thứ 7',
+            0 => 'Chủ nhật'
+        ];
+        // dd($courses);
+        return view('admin.course.show', compact('courses', 'days', 'status'));
     }
 
     public function add()
@@ -70,7 +82,7 @@ class CourseController extends Controller
             }
         }
         $imageCourseUrl = Cloudinary::upload($request->file('image_course')->getRealPath())->getSecurePath();
-        if(!$imageCourseUrl){
+        if (!$imageCourseUrl) {
             return redirect()->route('admin.course.add')->with('fail', 'Có lỗi xảy ra, vui lòng thử tạo lại!');
         }
 

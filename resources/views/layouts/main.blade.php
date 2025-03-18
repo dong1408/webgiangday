@@ -4,42 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Học Toán Lý</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    {{-- <link rel="stylesheet" href="style.css"> --}}
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.tiny.cloud/1/qbw7rset86a37udw8sv86njuneptk0ctw88a570llag2w9od/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/qbw7rset86a37udw8sv86njuneptk0ctw88a570llag2w9od/tinymce/6/tinymce.min.js"
+        referrerpolicy="origin"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 
 <body>
-
     <div class="top-header">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="contact-info">
                 <span><i class="fas fa-phone-alt"></i> 0916 025552</span>
                 <span><i class="fas fa-envelope"></i> toanly.thayphuc@gmail.com</span>
             </div>
-            @auth
-                <!-- Settings Dropdown -->
-                <div class="auth-links">
-                    <div class="dropdown">
-                        <p class="dropdown-toggle" style="color: white; margin-bottom:0px" onclick="toggleDropdown()">{{ Auth::user()->name }}</p>
-                        <div class="dropdown-menu">
-                            <a href="{{ route('profile.edit') }}">Profile</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <a href="" onclick="event.preventDefault();
-                                                this.closest('form').submit();">Log Out</a>
-                            </form>
+            <div class="header-right">
+                @auth
+                    <!-- Settings Dropdown -->
+                    <div class="auth-links">
+                        <div class="dropdown">
+                            <p class="dropdown-toggle" style="color: white; margin-bottom:0px" onclick="toggleDropdown()">
+                                {{ Auth::user()->name }}</p>
+                            <div class="dropdown-menu">
+                                <a href="{{ route('profile.edit') }}">Profile</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a href=""
+                                        onclick="event.preventDefault();
+                                                this.closest('form').submit();">Log
+                                        Out</a>
+                                </form>
+                            </div>
                         </div>
                     </div>
+                @else
+                    <div class="auth-links">
+                        <a href="{{ route('register') }}">Đăng ký</a> | <a href="{{ route('login') }}">Đăng nhập</a>
+                    </div>
+                @endauth
+                <div class="cart-icon">
+                    <a href="{{ route('cart.show') }}" class="cart-link">
+                        🛒 <span id="cart-count">0</span>
+                    </a>
                 </div>
-            @else
-                <div class="auth-links">
-                    <a href="{{ route('register') }}">Đăng ký</a> | <a href="{{ route('login') }}">Đăng nhập</a>
-                </div>
-            @endauth            
+            </div>
         </div>
     </div>
 
@@ -107,7 +120,7 @@
     </div>
 
     @yield('main-content')
-    
+
     <!-- Footer -->
     <footer class="footer mt-5">
         <div class="footer-container">
@@ -210,19 +223,16 @@
     .top-header .contact-info {
         display: flex;
         align-items: center;
-        gap: 20px; /* Khoảng cách giữa các phần tử */
+        gap: 20px;
+        /* Khoảng cách giữa các phần tử */
     }
 
-    .top-header .contact-info span{
+    .top-header .contact-info span {
         display: flex;
         align-items: center;
         gap: 8px;
-        white-space: nowrap;     
+        white-space: nowrap;
     }
-
-    /* .top-header .contact-info span {
-        margin-right: 20px;
-    } */
 
     .top-header .auth-links a {
         color: #fff;
@@ -232,6 +242,29 @@
 
     .top-header .auth-links a:hover {
         text-decoration: underline;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .cart-icon {
+        position: relative;
+        font-size: 22px;
+    }
+
+    #cart-count {
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 50%;
+        position: absolute;
+        top: -8px;
+        right: -8px;
     }
 
     .dropdown {
@@ -279,7 +312,7 @@
     /* Làm navbar đè lên banner */
     .navbar {
         position: fixed;
-        top: 60px;
+        top: 70px;
         width: 100%;
         z-index: 1000;
         transition: transform 0.4s ease-in-out;
@@ -507,7 +540,8 @@
     /* Style từng cột */
     .footer-column {
         flex: 1;
-        min-width: 200px; /* Giúp cột không quá nhỏ khi thu nhỏ màn hình */
+        min-width: 200px;
+        /* Giúp cột không quá nhỏ khi thu nhỏ màn hình */
         margin-bottom: 20px;
     }
 
@@ -568,11 +602,12 @@
     /* Responsive cho màn hình nhỏ (dưới 768px) */
     @media screen and (max-width: 768px) {
         .footer-container {
-            flex-direction: column; /* Chuyển sang dạng cột */
+            flex-direction: column;
+            /* Chuyển sang dạng cột */
             align-items: center;
             text-align: center;
         }
-        
+
         .footer-column {
             width: 100%;
         }
@@ -581,7 +616,6 @@
             justify-content: center;
         }
     }
-
 </style>
 
 <script>
@@ -611,27 +645,6 @@
 
         lastScrollTop = scrollTop;
     });
-
-    // Countdown Timer
-    function countdown() {
-        const targetDate = new Date("2025-03-01T00:00:00").getTime();
-        setInterval(() => {
-            const now = new Date().getTime();
-            const timeLeft = targetDate - now;
-
-            let days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-        }, 1000);
-    }
-
-    countdown();
 
 
     function toggleDropdown() {

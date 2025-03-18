@@ -243,11 +243,9 @@
 
         <!-- Hình ảnh đánh giá -->
         <div class="avatar-container">
-            <img src="https://hoctoan.vn/wp-content/uploads/2015/11/VNNIClogo-100x100.png" alt="User 1"
-                class="avatar">
+            <img src="https://hoctoan.vn/wp-content/uploads/2015/11/VNNIClogo-100x100.png" alt="User 1" class="avatar">
             <img src="https://hoctoan.vn/wp-content/uploads/2015/11/Loi-100x100.png" alt="User 2" class="avatar">
-            <img src="https://hoctoan.vn/wp-content/uploads/2015/11/Co-Giang-100x100.png" alt="User 3"
-                class="avatar">
+            <img src="https://hoctoan.vn/wp-content/uploads/2015/11/Co-Giang-100x100.png" alt="User 3" class="avatar">
         </div>
 
         <!-- Tên người đánh giá -->
@@ -275,4 +273,29 @@
             <img src="https://hoctoan.vn/wp-content/uploads/2022/04/Google-Play-320.101.png" alt="Google Play">
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            countdown();
+        });
+        
+        // Countdown Timer
+        function countdown() {
+            const targetDate = new Date("2025-03-01T00:00:00").getTime();
+            setInterval(() => {
+                const now = new Date().getTime();
+                const timeLeft = targetDate - now;
+
+                let days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+                document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+                document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+                document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+            }, 1000);
+        }
+    </script>
 @endsection

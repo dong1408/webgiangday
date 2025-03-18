@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\GoogleMeetController;
+use App\Http\Controllers\Guest\CartController;
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -23,6 +24,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/gioi-thieu', [HomeController::class, 'introduction'])->name('introduction');
 Route::get('/shop-toan-ly', [ProductController::class, 'index'])->name('product.main');
 Route::get('/shop-toan-ly/{id}', [ProductController::class, 'detail'])->name('product.detail');
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
+Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
 // ===================== END GUEST ======================== //
 
