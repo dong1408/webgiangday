@@ -76,6 +76,49 @@
             left: 0px;
         }
 
+
+        #order-review-wp .shop-table {
+            width: 100%;
+            text-align: left;
+        }
+
+        #order-review-wp .shop-table tr td:nth-child(2) {
+            text-align: right;
+        }
+
+        #order-review-wp .shop-table thead tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #order-review-wp .shop-table thead tr td {
+            text-transform: uppercase;
+            padding-bottom: 15px;
+            text-transform: uppercase;
+            font-family: 'Roboto Medium';
+        }
+
+        #order-review-wp .shop-table tbody tr td {
+            padding: 15px 0px;
+            border-bottom: 1px solid #ddd;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        #order-review-wp .shop-table tbody tr td .product-quantity {
+            display: inline-block;
+            padding-left: 10px;
+            font-family: 'Roboto Medium';
+            font-weight: normal;
+            font-size: 13px;
+        }
+
+        #order-review-wp .shop-table tfoot tr td {
+            padding: 15px 0px;
+            text-transform: uppercase;
+            font-family: 'Roboto Medium';
+            font-weight: normal;
+        }
+
         /* *************************************** */
     </style>
 
@@ -132,17 +175,30 @@
                         <h1 class="section-title">Thông tin đơn hàng</h1>
                     </div>
                     <div class="section-body">
-                        <ul class="list-group">
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Sản phẩm A</span> <strong>200.000 VND</strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Sản phẩm B</span> <strong>150.000 VND</strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between bg-light">
-                                <strong>Tổng tiền:</strong> <strong>350.000 VND</strong>
-                            </li>
-                        </ul>
+                        <table class="shop-table">
+                            <thead>
+                                <tr>
+                                    <td>Sản phẩm</td>
+                                    <td>Tổng</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($cart as $item)
+                                    <tr class="cart-item">
+                                        <td class="product-name">{{ $item['name'] }}<strong
+                                                class="product-quantity">x1</strong>
+                                        </td>
+                                        <td class="product-total">{{ number_format($item['price'], 0, '.', '.') }}đ</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="order-total">
+                                    <td>Tổng đơn hàng:</td>
+                                    <td><strong class="total-price">{{ number_format($cartInfo['total'], 0, '.', '.') }} vnđ</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                     <!-- Chọn Phương Thức Thanh Toán -->
                     <div class="section-footer" style="margin-top: 20px">
@@ -155,7 +211,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="payment_method" id="stripe"
                                 value="stripe">
-                            <label class="form-check-label" for="stripe">Thẻ tín dụng / Stripe</label>
+                            <label class="form-check-label" for="stripe">Thanh toán qua Momo</label>
                         </div>
                         <div class="text-center mt-4">
                             <button class="btn btn-primary w-100" onclick="submitOrder()">Xác nhận đặt hàng</button>

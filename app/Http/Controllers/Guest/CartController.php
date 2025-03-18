@@ -14,7 +14,7 @@ class CartController extends Controller
 {
     public function show()
     {
-        $cart = Session::get('cart', []);
+        $cart = Session::get('cart.buy', []);
         $days = [
             1 => 'Thứ 2',
             2 => 'Thứ 3',
@@ -33,7 +33,7 @@ class CartController extends Controller
             'course_id' => 'required|integer|exists:courses,id'
         ]);
 
-        $cart = Session::get('cart', []);
+        $cart = Session::get('cart.buy', []);
 
         $courseId = $request->input('course_id');
         $course = Course::find($courseId);
@@ -63,6 +63,7 @@ class CartController extends Controller
             $cart[$courseId] = [
                 'course_id' => $courseId,
                 'name' => $course->name,
+                'price' => $course->price,
                 'type' => $course->course_type,
                 'image_url' => $course->image_url,
                 'schedules' => $schedules,
@@ -71,7 +72,8 @@ class CartController extends Controller
             ];
         }
 
-        Session::put('cart', $cart);
+        Session::put('cart.buy', $cart);
+        $this->update_info_cart();
 
         return response()->json([
             'success' => true,
@@ -81,7 +83,32 @@ class CartController extends Controller
     }
 
 
-    public function checkout(){
-        return view('user.cart.checkout');
+    private function update_info_cart()
+    {
+        if (Session::has('cart.buy')) {
+            $num_order = 0;
+            $total = 0;
+            $cart = Session::get('cart.buy');
+
+            // dd($cart);
+            foreach ($cart as $item) {
+                $num_order += 1;
+                $total += $item['price'];
+            }
+
+            Session::put('cart.info', [
+                'num_order' => $num_order,
+                'total' => $total,
+            ]);
+        }
+    }
+
+
+    public function checkout()
+    {
+        $cart = Session::get('cart.buy', []);
+        $cartInfo = Session::get('cart.info', []);
+        // dd($cart, $cartInfo);
+        return view('user.cart.checkout', compact('cart', 'cartInfo'));
     }
 }
