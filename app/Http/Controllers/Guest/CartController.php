@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
@@ -110,5 +112,52 @@ class CartController extends Controller
         $cartInfo = Session::get('cart.info', []);
         // dd($cart, $cartInfo);
         return view('user.cart.checkout', compact('cart', 'cartInfo'));
+    }
+
+    public function payment(Request $request)
+    {
+        $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'address' => 'required|string|max:500',
+        ]);
+
+        $cart = Session::get('cart.buy', []);
+        if (empty($cart)) {
+            return back()->with('error', 'Giỏ hàng của bạn đang trống!');
+        }
+
+        $totalPrice = array_sum(array_column($cart, 'price'));
+
+        // Tạo đơn hàng
+        $order = Order::create([
+            'customer_name' => $request->customer_name,
+            'email' => $request->email,
+            'address' => $request->address,
+            'total_price' => $totalPrice,
+            'payment_method' => 'COD',
+            'status' => 'pending',
+        ]);
+
+        // Thêm chi tiết đơn hàng
+        foreach ($cart as $item) {
+            OrderDetail::create([
+                'order_id' => $order->id,
+                'course_id' => $item['course_id'],
+                'course_name' => $item['name'],
+                'price' => $item['price'],
+            ]);
+        }
+
+        // Xóa giỏ hàng sau khi đặt hàng thành công
+        Session::forget('cart.buy');
+
+        return redirect()->route('checkout.success')->with('success', 'Đặt hàng thành công!');
+    }
+
+
+    public function success()
+    {
+        return view('checkout.success');
     }
 }
