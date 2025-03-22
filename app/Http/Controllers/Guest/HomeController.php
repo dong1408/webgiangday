@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     public function index(){
-        return view('user.home.main');
+        // return view('user.home.main');
+        return view('user.home.nhathuocankhang');
     }
 
     public function introduction(){
