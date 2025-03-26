@@ -138,49 +138,50 @@ class CartController extends Controller
             ]);
         }
 
-        $totalPrice = array_sum(array_column($cart, 'price'));
-
-        // Tạo đơn hàng
-        $order = Order::create([
-            'user_id' => 1,
-            'customer_name' => $request->fullname,
-            'email' => $request->email,
-            'address' => $request->address,
-            'total_price' => $totalPrice,
-            'payment_method' => 'COD',
-            'status' => 'pending',
-        ]);
-
-        // Thêm chi tiết đơn hàng
-        foreach ($cart as $item) {
-            OrderDetail::create([
-                'order_id' => $order->id,
-                'course_id' => $item['course_id'],
-                'course_name' => $item['name'],
-                'price' => $item['price'],
+        $paymentMethod = $data['paymentMethod'];
+        if ($paymentMethod == 'cod') {
+            // Tạo đơn hàng
+            $totalPrice = array_sum(array_column($cart, 'price'));
+            $order = Order::create([
+                'user_id' => 1,
+                'customer_name' => $request->fullname,
+                'email' => $request->email,
+                'address' => $request->address,
+                'total_price' => $totalPrice,
+                'payment_method' => 'COD',
+                'status' => 'pending',
             ]);
+            // Tạo chi tiết đơn hàng
+            foreach ($cart as $item) {
+                OrderDetail::create([
+                    'order_id' => $order->id,
+                    'course_id' => $item['course_id'],
+                    'course_name' => $item['name'],
+                    'price' => $item['price'],
+                ]);
+            }
+            // Xóa giỏ hàng sau khi đặt hàng thành công
+            Session::forget('cart');
+            // Gửi mail
+            $template = 'mail.orders.contact_directly';
+            $data = [
+                'userEmail' => 'tranvandong14082002@gmail.com',
+                'subject' => 'test',
+                'order' => $order
+            ];
+            SendEmailJob::dispatch($template, $data);
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment success!'
+            ], 200);
+        } elseif ($paymentMethod == 'momo') {
         }
-
-        // Xóa giỏ hàng sau khi đặt hàng thành công
-        Session::forget('cart');
-
-        $template = 'mail.orders.contact_directly';
-        $data = [
-            'userEmail' => 'tranvandong14082002@gmail.com',
-            'subject' => 'test',
-            'order' => $order
-        ];
-
-        SendEmailJob::dispatch($template, $data);
-
-        // Mail::to('tranvandong14082002@gmail.com')->send(new OrderContactDirectly($order));
-        // Mail::to('tranvandong14082002@gmail.com')->queue(new OrderContactDirectly($order));
 
 
         return response()->json([
-            'success' => true,
-            'message' => 'Payment success'
-        ], 200);
+            'success' => false,
+            'message' => 'Sometime error, please try again!'
+        ], 400);
     }
 
 

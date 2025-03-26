@@ -265,6 +265,7 @@
         });
 
         function submitOrder() {
+            $("#loading").show();
             // Get form data
             const form = document.querySelector("#checkout-form");
             const formData = new FormData(form);
@@ -284,11 +285,21 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    if (response.success) {
-                        window.location.href = '/checkout/success';
-                    } else {
-                        window.location.href = '/';
-                    }
+                    $("#loading").hide();
+                    setTimeout(() => {
+                        if (response.success) {
+                            window.location.href = '/checkout/success';
+                        } else {
+                            window.location.href = '/';
+                        }
+                    }, 100);
+                },
+                error: function(xhr) {
+                    $("#loading").hide();
+                    setTimeout(() => {
+                        let errorData = JSON.parse(xhr.responseText);
+                        alert(errorData.message);
+                    }, 100);
                 }
             });
         }

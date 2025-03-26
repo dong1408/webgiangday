@@ -286,6 +286,9 @@
     <script>
         $(document).ready(function() {
             $('.btn-add-cart').click(function() {
+
+                $('#loading').show();
+
                 let courseId = $(this).data('product-id');
 
                 $.ajax({
@@ -296,14 +299,20 @@
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
-                        if (response.success) {
-                            $('#cartSuccessModal').modal('show');
-                        } else {
-                            alert(response.message);
-                        }
+                        $("#loading").hide();
+                        setTimeout(() => {
+                            if (response.success) {
+                                $('#cartSuccessModal').modal('show');
+                            } else {
+                                alert(response.message);
+                            }
+                        }, 100);
                     },
                     error: function() {
-                        alert('Lỗi khi thêm vào giỏ hàng!');
+                        $("#loading").hide();
+                        setTimeout(() => {
+                            alert('Lỗi khi thêm vào giỏ hàng!');
+                        });
                     }
                 });
             });
