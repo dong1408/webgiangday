@@ -149,17 +149,17 @@
                         <form id="checkout-form">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Họ và tên:</label>
-                                <input type="text" id="name" class="form-control" placeholder="Nguyễn Văn A"
-                                    required>
+                                <input type="text" name="fullname" id="name" class="form-control"
+                                    placeholder="Nguyễn Văn A" required>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email:</label>
-                                <input type="email" id="email" class="form-control" placeholder="example@email.com"
-                                    required>
+                                <input type="email" name="email" id="email" class="form-control"
+                                    placeholder="example@email.com" required>
                             </div>
                             <div class="mb-3">
                                 <label for="address" class="form-label">Địa chỉ nhận hàng:</label>
-                                <input type="text" id="address" class="form-control"
+                                <input type="text" name="address" id="address" class="form-control"
                                     placeholder="Số nhà, Đường, Phường, Quận, TP" required>
                             </div>
                         </form>
@@ -195,7 +195,8 @@
                             <tfoot>
                                 <tr class="order-total">
                                     <td>Tổng đơn hàng:</td>
-                                    <td><strong class="total-price">{{ number_format($cartInfo['total'], 0, '.', '.') }} vnđ</strong></td>
+                                    <td><strong class="total-price">{{ number_format($cartInfo['total'], 0, '.', '.') }}
+                                            vnđ</strong></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -204,14 +205,35 @@
                     <div class="section-footer" style="margin-top: 20px">
                         <h6>Chọn phương thức thanh toán</h6>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payment_method" id="cod"
-                                value="cod" checked>
-                            <label class="form-check-label" for="cod">Thanh toán khi nhận hàng (COD)</label>
+                            <input class="form-check-input" type="radio" name="payment_method" id="momo-payment"
+                                value="momo" checked>
+                            <label class="form-check-label" for="momo-payment">Thanh toán qua Momo</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payment_method" id="stripe"
-                                value="stripe">
-                            <label class="form-check-label" for="stripe">Thanh toán qua Momo</label>
+                            <input class="form-check-input" type="radio" name="payment_method" id="contact-payment"
+                                value="cod">
+                            <label class="form-check-label" for="contact-payment">Liên hệ trực tiếp người bán</label>
+                        </div>
+                        <!-- Thông tin người bán -->
+                        <div id="sellerInfo" style="display: none; margin-top: 10px; border: 1px solid #ddd">
+                            <div class="row" style="padding: 20px">
+                                <div class="col-md-8">
+                                    <p><strong>Người bán:</strong> Nguyễn Văn B</p>
+                                    <p><strong>Zalo:</strong> 0123 456 789</p>
+                                    <a href="https://zalo.me/0123456789" target="_blank">
+                                        <button
+                                            style="background: #0084ff; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 10px">
+                                            Nhắn tin Zalo
+                                        </button>
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <div>
+                                        <img src="https://khangnguyenco.vn/pub/media/magefan_blog/ma-qr-code.jpg"
+                                            style="width: 100%" alt="">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="text-center mt-4">
                             <button class="btn btn-primary w-100" onclick="submitOrder()">Xác nhận đặt hàng</button>
@@ -221,4 +243,54 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let contactOption = document.getElementById("contact-payment");
+            let momoOption = document.getElementById("momo-payment");
+            let sellerInfo = document.getElementById("sellerInfo");
+
+            function toggleSellerInfo() {
+                if (contactOption.checked) {
+                    sellerInfo.style.display = "block";
+                } else {
+                    sellerInfo.style.display = "none";
+                }
+            }
+
+            contactOption.addEventListener("change", toggleSellerInfo);
+            momoOption.addEventListener("change", toggleSellerInfo);
+
+            toggleSellerInfo(); // Gọi để kiểm tra trạng thái ban đầu
+        });
+
+        function submitOrder() {
+            // Get form data
+            const form = document.querySelector("#checkout-form");
+            const formData = new FormData(form);
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            // Convert FormData to object
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            data['paymentMethod'] = paymentMethod;
+
+            $.ajax({
+                url: '/cart/payment',
+                method: 'POST',
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = '/checkout/success';
+                    } else {
+                        window.location.href = '/';
+                    }
+                }
+            });
+        }
+    </script>
 @endsection

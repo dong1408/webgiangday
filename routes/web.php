@@ -27,6 +27,7 @@ Route::get('/shop-toan-ly/{id}', [ProductController::class, 'detail'])->name('pr
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/cart/payment', [CartController::class, 'payment'])->name('cart.payment');
 
 // ===================== END GUEST ======================== //
 

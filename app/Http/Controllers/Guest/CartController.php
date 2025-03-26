@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
+use App\Mail\OrderContactDirectly;
 use App\Models\Course;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -10,7 +12,10 @@ use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
+
+use function PHPSTORM_META\map;
 
 class CartController extends Controller
 {
@@ -77,6 +82,7 @@ class CartController extends Controller
         Session::put('cart.buy', $cart);
         $this->update_info_cart();
 
+
         return response()->json([
             'success' => true,
             'message' => 'Sản phẩm đã được thêm vào giỏ hàng!',
@@ -116,22 +122,28 @@ class CartController extends Controller
 
     public function payment(Request $request)
     {
+        $data = $request->all();
+
         $request->validate([
-            'customer_name' => 'required|string|max:255',
+            'fullname' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'address' => 'required|string|max:500',
         ]);
 
         $cart = Session::get('cart.buy', []);
         if (empty($cart)) {
-            return back()->with('error', 'Giỏ hàng của bạn đang trống!');
+            return response()->json([
+                'success' => false,
+                'message' => "Hiện tại không có sản phẩm nào trong giỏ hàng!"
+            ]);
         }
 
         $totalPrice = array_sum(array_column($cart, 'price'));
 
         // Tạo đơn hàng
         $order = Order::create([
-            'customer_name' => $request->customer_name,
+            'user_id' => 1,
+            'customer_name' => $request->fullname,
             'email' => $request->email,
             'address' => $request->address,
             'total_price' => $totalPrice,
@@ -150,9 +162,25 @@ class CartController extends Controller
         }
 
         // Xóa giỏ hàng sau khi đặt hàng thành công
-        Session::forget('cart.buy');
+        Session::forget('cart');
 
-        return redirect()->route('checkout.success')->with('success', 'Đặt hàng thành công!');
+        $template = 'mail.orders.contact_directly';
+        $data = [
+            'userEmail' => 'tranvandong14082002@gmail.com',
+            'subject' => 'test',
+            'order' => $order
+        ];
+
+        SendEmailJob::dispatch($template, $data);
+
+        // Mail::to('tranvandong14082002@gmail.com')->send(new OrderContactDirectly($order));
+        // Mail::to('tranvandong14082002@gmail.com')->queue(new OrderContactDirectly($order));
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment success'
+        ], 200);
     }
 
 
