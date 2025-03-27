@@ -236,7 +236,11 @@
                             </div>
                         </div>
                         <div class="text-center mt-4">
-                            <button class="btn btn-primary w-100" onclick="submitOrder()">Xác nhận đặt hàng</button>
+                            <button class="btn btn-primary w-100" style="display: none" id="paymentCod"
+                                data-urlpayment={{ route('createCodPayment') }}>Xác nhận </button>
+                            <button class="btn btn-primary w-100" id="paymentMomo"
+                                data-urlpayment = "{{ route('createMomoPayment') }}">Thanh toán với
+                                momo</button>
                         </div>
                     </div>
                 </div>
@@ -246,22 +250,106 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let contactOption = document.getElementById("contact-payment");
-            let momoOption = document.getElementById("momo-payment");
+            // let contactOption = document.getElementById("contact-payment");
+            // let momoOption = document.getElementById("momo-payment");
+            // let sellerInfo = document.getElementById("sellerInfo");
+
+            // function toggleSellerInfo() {
+            //     if (contactOption.checked) {
+            //         sellerInfo.style.display = "block";
+
+            //     } else {
+            //         sellerInfo.style.display = "none";
+            //     }
+            // }
+
+            // contactOption.addEventListener("change", toggleSellerInfo);
+            // momoOption.addEventListener("change", toggleSellerInfo);
+
+            // toggleSellerInfo();
+        });
+
+
+        // Sự kiện click lựa chọn thanh toán 
+        $('input[name="payment_method"]').change(function() {
             let sellerInfo = document.getElementById("sellerInfo");
-
-            function toggleSellerInfo() {
-                if (contactOption.checked) {
-                    sellerInfo.style.display = "block";
-                } else {
-                    sellerInfo.style.display = "none";
-                }
+            let btnPaymentCod = document.getElementById('paymentCod');
+            let btnPaymentMomo = document.getElementById('paymentMomo');
+            let paymentMethod = $(this).val();
+            if (paymentMethod == 'momo') {
+                sellerInfo.style.display = "none";
+                btnPaymentMomo.style.display = 'block';
+                btnPaymentCod.style.display = 'none';
+            } else if (paymentMethod == 'cod') {
+                sellerInfo.style.display = "block";
+                btnPaymentMomo.style.display = 'none';
+                btnPaymentCod.style.display = 'block';
             }
+        });
 
-            contactOption.addEventListener("change", toggleSellerInfo);
-            momoOption.addEventListener("change", toggleSellerInfo);
+        // Lựa chọn thanh toán liên hệ trực tiếp
+        $('#paymentCod').click(function() {
+            var urlCod = $(this).data('urlpayment');
+            // Get form data
+            const form = document.querySelector("#checkout-form");
+            const formData = new FormData(form);
+            // const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            // Convert FormData to object
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
 
-            toggleSellerInfo(); // Gọi để kiểm tra trạng thái ban đầu
+            $.ajax({
+                url: urlCod,
+                method: 'POST',
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    // $("#loading").hide();
+                    // if (response.success) {
+                    //     window.location.href = '/checkout/success';
+                    // } else {
+                    //     window.location.href = '/';
+                    // }
+                },
+            });
+        });
+
+
+        // Chọn thanh toán với momo
+        $('#paymentMomo').click(function() {
+            var urlMomo = $(this).data('urlpayment');
+            // Get form data
+            const form = document.querySelector("#checkout-form");
+            const formData = new FormData(form);
+            // const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            // Convert FormData to object
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            $.ajax({
+                url: urlMomo,
+                method: 'POST',
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    // $("#loading").hide();
+                    if (response && response.payUrl) {
+                        window.location.href = response.payUrl;
+                    } else {
+                        toastr.error("Không thể tạo thanh toán momo");
+                    }
+                },
+                error: function() {
+                    toastr.error("Có lỗi xảy ra khi kết nối tới momo");
+                }
+            });
         });
 
         function submitOrder() {

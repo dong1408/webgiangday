@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\GoogleMeetController;
 use App\Http\Controllers\Guest\CartController;
+use App\Http\Controllers\Guest\CheckoutController;
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -28,6 +29,10 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 Route::post('/cart/payment', [CartController::class, 'payment'])->name('cart.payment');
+Route::post('/create-momo-payment', [CheckoutController::class, 'paymentMomo'])->name('createMomoPayment');
+Route::post('/create-cod-payment', [CheckoutController::class, 'paymentCod'])->name('createCodPayment');
+Route::get('/momo/callback', [CheckoutController::class, 'callbackMomo'])->name('momo.callback');
+Route::post('/momo/ipn', [CheckoutController::class, 'ipnMomo'])->name('momo.ipn');
 
 // ===================== END GUEST ======================== //
 
